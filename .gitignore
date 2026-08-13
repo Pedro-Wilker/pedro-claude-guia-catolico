@@ -1,0 +1,31 @@
+# Device-specific (paths absolutos, credenciais)
+*.local
+*.local.json
+.env
+.env.*
+secrets/
+*.secret
+*.token
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build
+dist/
+build/
+node_modules/
+
+# Temporários
+*.tmp
+*.bak

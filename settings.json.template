@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "_comment": "Template neutro para projeto meu-guia-catolico. Paths via sed em setup.sh.",
+  "permissions": {
+    "allow": [
+      "Bash(git -C __PROJECT_ROOT__/pedro-claude-guia-catolico *)",
+      "Bash(git -C __PROJECT_ROOT__/meu-guia-catolico *)",
+      "Bash(npm run *)",
+      "Bash(npx *)",
+      "Bash(node *)",
+      "Read",
+      "Write",
+      "Edit",
+      "Glob",
+      "Grep"
+    ]
+  }
+}

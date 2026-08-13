@@ -1,0 +1,25 @@
+- [User communication style](user-communication-style.md) — PT-BR, comandos curtos, aprova em bloco, espera ação sem re-confirmação
+- [Project: frontend MVP status](project-frontend-mvp-status.md) — todas as 6 fases entregues; 45 testes, 0 lint, 0 TS, build passa
+- [Backend dev commands](backend-dev-commands.md) — como subir backend (Docker) e frontend (npm) localmente, com seed accounts
+- [Documentação para cliente (2026-07-29)](documentacao-cliente-2026-07-29.md) — 3 docs HTML→PDF: Backend, Frontend, Roadmap
+- [Ultracode mode](ultracode-mode.md) — ligado nesta sessão desde 2026-07-29; workflows multi-agente por padrão
+- [Seed demo (2026-07-29)](project-seed-demo-data.md) — 20 empresas + 6 clientes + 30 reviews + 8 promoções com picsum.photos; fixtures frontend p/ Jobs e Blog
+- [Jobs+Blog backend completo (2026-07-31)](project-jobs-blog-backend-completo.md) — FASE 4+6 models/services/handlers/routes todos implementados; só falta painéis + testes
+- [FASE 3 LGPD + Segurança](project-fase-3-lgpd-status.md) — entregue 2026-07-29: Consent/AuditLog, /me/* endpoints, security headers, rate limit, página /conta/dados
+- [FASE 5 finalizada (2026-08-01)](project-fase-5-finalizada.md) — upload+cache+email+CI+upload-frontend; coverage 82.8% (5 packages); relatorio escrito; bug GORM IsActive corrigido
+- [FASE 6 Blog/Artigos design (2026-08-01)](project-fase-6-design.md) — design aprovado, 5 fatias 6A→6E (~19h); spec em docs/superpowers/specs/2026-08-01-fase-6-blog-design.md
+- [FASE 7 Campanhas email finalizada (2026-08-01)](project-fase-7-finalizada.md) — 14 endpoints admin, worker in-process, wizard frontend, LGPD via consent; WA/IG em standby
+- [CLAUDE.md auto-load (2026-08-05)](project-claude-md-auto-load.md) — 5 .md raiz lidos toda sessão (README, REFERENCIAL, ANALISE, PADROES, memoria); logs fora
+- [Auditoria fases 3-7 (2026-08-05)](project-audit-fases-3-7.md) — FASE 4 frontend + FASE 6 Blog + FASE 7 Campanhas estavam mais completas que memoria dizia; gaps: S3, categorias separadas, rotas PT-BR
+- [Gaps fechados + perf (2026-08-05)](project-gaps-perf-2026-08-05.md) — aliases PT-BR no backend, S3 driver AWS SDK v2, decisão manter Category compartilhada, RSC cache revalidate, Suspense + dynamic imports, loading.tsx contextuais
+- [Fix 404 demo-job-010 (2026-08-05)](project-fix-404-detail-pages.md) — try/catch ApiError 404/403 → notFound() em /vagas/[slug], /blog/[slug], /profissionais/[slug]
+- [FASE 8 Stripe finalizada (2026-08-05)](project-fase-8-finalizada.md) — backend + 5 endpoints + webhook idempotente; frontend checkout/history/sidebar; 9 testes + 111 frontend testes
+- [FASE 1 partner library (2026-08-11)](project-fase-1-partner-library.md) — 6 componentes Partner + helper + barrel + design-preview expandido; 176/176 vitest; build bloqueado por OneDrive .next/trace EPERM
+- [Fix OneDrive dev (2026-08-11)](project-fix-onedrive-dev.md) — distDir→%TEMP% via path.relative + NODE_PATH=./node_modules; 200 em / e /design-preview
+- [FASE 2 home rewrite (2026-08-11)](project-fase-2-home-rewrite.md) — reescrita home ordem nova spec §4; helper getHomeSections + CategoryBlock; 186/186 vitest; / retorna 200
+- [FASE 3 listings + details (2026-08-11)](project-fase-3-listings-details.md) — listings sticky sidebar + grid PartnerCard; detalhes tabs anchor + sticky; token refresh font-display/surface-elevated
+- [FASE 4 paineis + auth (2026-08-11)](project-fase-4-paineis-auth.md) — auth split 2-col brand navy + versiculo; batch token refresh em dashboard/* e admin/*
+- [FASE 5 footer global (2026-08-11)](project-fase-5-footer-global.md) — FooterInstitutional em (public)/layout.tsx; /design-preview removido (404); 186/186 vitest
+- [Redesign completo 6 fases (2026-08-11)](project-redesign-completo.md) — fase 0 (tokens)+1 (comps)+2 (home)+3 (list/details)+4 (paineis/auth)+5 (footer global); 186/186 vitest
+- [FASE 3 cards+chips+headers (2026-08-11)](project-fase-3-listings-details.md) — PartnerCard em SearchResults, CategoryChips helper (paramKey+basePath), VerifiedBadge inline no h1, font-display polish em 6 páginas; 186/186 vitest; build não validado
+- [Redesign 6 fases 2026-08-12 + Fase 7 correcoes](redesign-fase-7-telas-restantes.md) — 4 shells + 2 cards + AdminPageHeader; 26 paginas redesenhadas; 222/222 vitest; build 53 rotas; smoke 200; user vai passar telas quebradas prox sessao
