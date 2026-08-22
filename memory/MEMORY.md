@@ -24,3 +24,4 @@
 - [FASE 3 cards+chips+headers (2026-08-11)](project-fase-3-listings-details.md) — PartnerCard em SearchResults, CategoryChips helper (paramKey+basePath), VerifiedBadge inline no h1, font-display polish em 6 páginas; 186/186 vitest; build não validado
 - [Redesign 6 fases 2026-08-12 + Fase 7 correcoes](redesign-fase-7-telas-restantes.md) — 4 shells + 2 cards + AdminPageHeader; 26 paginas redesenhadas; 222/222 vitest; build 53 rotas; smoke 200; user vai passar telas quebradas prox sessao
 - [Cross-device sync setup (2026-08-13)](project-pedro-claude-sync.md) — repo pedro-claude-guia-catolico criado; fluxos "onde paramos"/"salvar progresso"; Regra 0 no CLAUDE.md
+- [Modificações pendentes (2026-08-22)](project-pending-mods-2026-08-22.md) — 10 itens: tr Feira de Santa, sub-categoria, grid denso categorias (5×6), cascata endereço, logo, labels destaque, recém-chegados 7d, vagas destaque, como funciona, re-analisar API; tr não iniciada
