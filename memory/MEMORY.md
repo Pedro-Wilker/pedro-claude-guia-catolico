@@ -1,4 +1,1 @@
-- [PRD modificações 2026-08-22](project-prd-mods-2026-08-22.md) — Fases A→D entregues, D pendente
-- [Setup device novo Windows](project-setup-windows-novo.md) — Postgres local + Docker host.docker.internal
-- [Fixes blog e buscar](project-fixes-buscar-blog.md) — filtros duplicados, cascata bairro/rua, layout
-- [Conventions Next/Bash](project-conventions.md) — NEXT_DIST_DIR, ignoreBuildErrors Next 15.5.4
+- [Fase D finalizada](project-fase-d-finalizada.md) — 0 500s, 5 fixes UUID em handlers
