@@ -1,55 +1,33 @@
-# SETUP — pedro-claude-guia-catolico
+# SETUP — Pedro ↔ Claude Guia Católico
 
-Configurar device novo com config Claude Code do projeto **meu-guia-catolico**.
+Diretório cross-device. Tudo aqui serve pra retomar o trabalho em qualquer máquina sem perder contexto.
 
-## Passo a passo
+## Estrutura
 
-### 1. Clonar repo de config
-
-```bash
-cd /c/Users/conta/OneDrive/Documentos/projeto/artonbyte
-git clone https://github.com/Pedro-Wilker/pedro-claude-guia-catolico.git
+```
+pedro-claude-guia-catolico/
+├── SETUP.md              ← este arquivo (meta + como retomar)
+├── SYNC-2026-09-14.md    ← snapshot detalhado do estado HOJE
+├── progress-ledger.md    ← ledger de tasks (espelho de .superpowers/sdd/progress.md)
+├── context.md            ← decisões críticas, LGPD, race conditions, findings
+├── commands.md           ← comandos copy-paste (docker, test, commit)
+└── resume.md             ← passo-a-passo pra retomar em outra máquina
 ```
 
-Cria `pedro-claude-guia-catolico/` ao lado de `meu-guia-catolico/`.
+## Quando usar
 
-### 2. Rodar setup.sh
+- **"onde paramos"** ou **"salvar progresso"** → gerar/atualizar SYNC-AAAAMM-DD.md
+- **"retomar"** ou **"continuar de onde parou"** → ler SYNC mais recente + progress-ledger + context
 
-```bash
-cd pedro-claude-guia-catolico
-chmod +x setup.sh
-./setup.sh
-```
+## Regra 0 do projeto (CLAUDE.md)
 
-Script:
-- Detecta `~/.claude/projects/<hash>/memory/` (Windows/Linux/Mac)
-- Copia `memory/*.md` → path do device
-- Gera `.claude/settings.local.json`
+Cross-device sync = este diretório. Salvar snapshot completo:
+- branch + último commit
+- tasks completas + próximas
+- contexto crítico (decisões, findings, race conditions)
+- paths de artifacts (briefs, reports, reviews)
+- comandos prontos
 
-### 3. Validar
+## Estado atual (resumo 1 linha)
 
-```bash
-ls ~/.claude/projects/*/memory/MEMORY.md
-ls .claude/settings.local.json
-ls ../meu-guia-catolico/CLAUDE.md
-```
-
-### 4. Testar
-
-Iniciar Claude Code na raiz `meu-guia-catolico/`. Falar **"onde paramos"**.
-
-## Salvar progresso
-
-```bash
-cd pedro-claude-guia-catolico
-cp ~/.claude/projects/*/memory/*.md memory/
-cp ../meu-guia-catolico/CLAUDE.md CLAUDE.md
-git add . && git commit -m "chore: salva progresso YYYY-MM-DD" && git push
-```
-
-## Próximo device
-
-```bash
-git pull --ff-only
-./setup.sh
-```
+Branch `main`, commit `10c49571`. PRD `planos-contrato-2026-09-13` em andamento — **6/21 tasks completas** (Tasks 1-6 do plan). Próxima: **Task 7 (handlers contract + rotas)**.
