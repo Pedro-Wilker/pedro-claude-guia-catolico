@@ -182,14 +182,14 @@ no painel Asaas (Minha Conta → Webhooks):
 
 ## Inputs Pedro decidir
 
-| Decisão | Opções |
-|---------|--------|
-| Host VPS | Contabo (já tem) / Hostinger / DigitalOcean |
-| Reverse proxy | Caddy (auto-TLS) / Nginx / Traefik |
-| SMTP prod | Brevo / SES / Mailgun |
-| Backups DB | cron local + rsync offsite / pg_dump + S3 |
-| Monitoramento | UptimeRobot (free) / Hetrixtools / nada por enquanto |
-| Stripe coexist | manter paralelo ou remover (F6) |
+| Decisão | Opções | Escolha |
+|---------|--------|---------|
+| Host VPS | Contabo / Hostinger / DigitalOcean | **Contabo** ✅ 2026-10-20 |
+| Reverse proxy | Caddy (auto-TLS) / Nginx / Traefik | ⬜ |
+| SMTP prod | Brevo / SES / Mailgun | ⬜ |
+| Backups DB | cron local + rsync offsite / pg_dump + S3 | ⬜ |
+| Monitoramento | UptimeRobot (free) / Hetrixtools / nada por enquanto | ⬜ |
+| Stripe coexist | manter paralelo ou remover (F6) | ⬜ |
 
 ---
 
