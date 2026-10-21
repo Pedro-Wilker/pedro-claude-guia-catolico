@@ -22,10 +22,10 @@ metadata:
 |---|------|-----------|--------|
 | B1.1 | `ASAAS_API_KEY` prod (`$aact_prod_...`) | Decio — pedir painel Asaas conta empresarial | ⬜ |
 | B1.2 | `ASAAS_WALLET_ID` prod | Decio — mesmo lugar | ⬜ |
-| B1.3 | Decisão % taxa split final (sandbox=10% default; prod geralmente maior 15-20%) | Pedro negocia | ⬜ |
+| B1.3 | Decisão % taxa split | **NAO bloqueia deploy** — subir com 10% (sandbox default), editar `.env.prod` + painel Asaas depois | ⬜ |
 | B1.4 | Webhook URL prod cadastrada no painel Asaas (`https://api.meuguia.com.br/webhooks/asaas`) | Pedro cadastra após DNS | ⬜ |
 
-**Não subir prod sem B1.1 — vai dar `401 unauthorized` em qualquer POST.**
+**Não subir prod sem B1.1 — vai dar `401 unauthorized` em qualquer POST. B1.3 é ajustável pós-deploy.**
 
 ---
 
