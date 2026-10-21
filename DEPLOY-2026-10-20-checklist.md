@@ -166,11 +166,14 @@ Se algo der errado pós-deploy:
 ## Inputs Pedro pedir Decio (template email)
 
 ```
-Decio, para subir prod do Meu Guia Católico preciso de 3 coisas da conta Asaas:
+Decio, para subir prod do Meu Guia Católico preciso de 2 coisas da conta Asaas:
 
 1. Production API key (começa com $aact_prod_) — painel Asaas → Integrações → API
-2. Wallet ID da conta
-3. Qual % de taxa split a plataforma fica? (sandbox estava em 10%, prod geralmente 15-20%)
+2. Wallet ID da conta (UUID)
+
+(O % de split a plataforma fica posso subir com 10% default e ajustar
+depois — não bloqueia deploy. Se quiser já definir um número,
+manda junto. Geralmente 15-20% pra SaaS.)
 
 Quando o sistema subir, precisamos também cadastrar a URL do webhook
 no painel Asaas (Minha Conta → Webhooks):
