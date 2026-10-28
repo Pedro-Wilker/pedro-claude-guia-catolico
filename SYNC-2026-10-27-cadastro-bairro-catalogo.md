@@ -147,3 +147,17 @@ cd "$FRONT" && npx vitest run && npm run typecheck
 5. **`slug` do bairro é a chave, não o nome** — mesmo nome em duas cidades exige o filtro por `region_id`.
 6. **Grep no site live**: o chunk da rota tem parênteses (`static/chunks/app/(auth)/entrar/page-*.js`) — regex que exclui `(` não acha nada.
 7. **VPS**: `~/.ssh/id_ed25519` tem passphrase e o agent não está rodando nesta máquina. Use `~/.ssh/gh_actions_deploy` (mesma chave que o CI usa, sem passphrase).
+
+## Reverificação — 2026-10-27 (sessão "onde paramos")
+
+Estado reconfirmado, **nenhuma mudança de código** desde o snapshot:
+
+| Checagem | Resultado |
+|---|---|
+| Backend `main` | `205eef9c` — árvore limpa, em sincronia com `origin/main` |
+| Frontend `master` | `688cd8b` — árvore limpa, em sincronia com `origin/master` |
+| Repo de sync | `f2b9887` — limpo, em sincronia com `origin/main` |
+| Prod API `/health` | `{"success":true,"data":{"database":"up","status":"ok"}}` |
+| Site `meuguiacatolico.com.br` | HTTP 200 |
+
+Próxima ação continua sendo escolher uma das trilhas abertas (SEO ou UI do Asaas F1–F6).
