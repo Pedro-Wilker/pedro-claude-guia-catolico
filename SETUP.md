@@ -7,10 +7,11 @@ Diretório cross-device. Tudo aqui serve pra retomar o trabalho em qualquer máq
 ```
 pedro-claude-guia-catolico/
 ├── SETUP.md              ← este arquivo (meta + como retomar)
-├── SYNC-2026-09-14.md    ← snapshot detalhado do estado HOJE
+├── SYNC-2026-10-27-cadastro-bairro-catalogo.md  ← snapshot mais recente (LER PRIMEIRO)
+├── SYNC-2026-10-20-asaas8-real-e2e.md           ← snapshot anterior
 ├── progress-ledger.md    ← ledger de tasks (espelho de .superpowers/sdd/progress.md)
 ├── context.md            ← decisões críticas, LGPD, race conditions, findings
-├── commands.md           ← comandos copy-paste (docker, test, commit)
+├── commands.md           ← comandos copy-paste (docker, test, commit, VPS)
 └── resume.md             ← passo-a-passo pra retomar em outra máquina
 ```
 
@@ -30,4 +31,13 @@ Cross-device sync = este diretório. Salvar snapshot completo:
 
 ## Estado atual (resumo 1 linha)
 
-Branch `main`, commit `10c49571`. PRD `planos-contrato-2026-09-13` em andamento — **6/21 tasks completas** (Tasks 1-6 do plan). Próxima: **Task 7 (handlers contract + rotas)**.
+Backend `main` = `205eef9c`, frontend `master` = `688cd8b` — ambos no ar (API na VPS, front na Vercel). Última entrega: **cadastro de empresa com bairro do catálogo (seleção obrigatória) + campo "Número do endereço"**. Sem código pendente; próximas trilhas: SEO (Search Console/Perfil Google/conteúdo) e UI do Asaas.
+
+## Caminho dos repos (mudaram em 2026-10)
+
+```bash
+BACK="C:/Users/conta/OneDrive/Documentos/projeto/artonbyte/meu-guia-catolico/backend"
+FRONT="C:/Users/conta/OneDrive/Documentos/projeto/artonbyte/meu-guia-catolico/frontend"
+```
+
+O caminho antigo `C:/Users/conta/OneDrive/Desktop/meu-guia/` não existe mais.

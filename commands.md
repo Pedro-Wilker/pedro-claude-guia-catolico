@@ -3,50 +3,99 @@
 ## Setup inicial (uma vez por máquina)
 
 ```bash
-cd "C:/Users/conta/OneDrive/Desktop/meu-guia/meu-guia-api"
-git status  # working tree limpo
-git log --oneline -10  # ver últimos commits
-MSYS_NO_PATHCONV=1 docker ps  # Docker vivo?
+export BACK="C:/Users/conta/OneDrive/Documentos/projeto/artonbyte/meu-guia-catolico/backend"
+export FRONT="C:/Users/conta/OneDrive/Documentos/projeto/artonbyte/meu-guia-catolico/frontend"
+export SYNC="C:/Users/conta/OneDrive/Documentos/projeto/artonbyte/meu-guia-catolico/pedro-claude-guia-catolico"
+
+git -C "$BACK" status    # working tree limpo
+git -C "$FRONT" status
 ```
 
 ## Git
 
 ```bash
 # Status
-git -C "C:/Users/conta/OneDrive/Desktop/meu-guia/meu-guia-api" status
-git -C "C:/Users/conta/OneDrive/Desktop/meu-guia/meu-guia-api" log --oneline -10
-git -C "C:/Users/conta/OneDrive/Desktop/meu-guia/meu-guia-api" branch --show-current
+git -C "$BACK" status
+git -C "$BACK" log --oneline -10
+git -C "$BACK" branch --show-current
+git -C "$FRONT" log --oneline -10
+git -C "$FRONT" branch --show-current
 
 # Diff
-git -C "C:/Users/conta/OneDrive/Desktop/meu-guia/meu-guia-api" diff --stat HASH_BASE..HASH_HEAD
-git -C "C:/Users/conta/OneDrive/Desktop/meu-guia/meu-guia-api" diff HASH_BASE..HASH_HEAD -- path/file.go
+git -C "$BACK" diff --stat HASH_BASE..HASH_HEAD
+git -C "$BACK" diff HASH_BASE..HASH_HEAD -- path/file.go
 
 # Race condition check (Pedro?)
-git -C "C:/Users/conta/OneDrive/Desktop/meu-guia/meu-guia-api" log --oneline BASE..HEAD
+git -C "$BACK" log --oneline BASE..HEAD
 ```
 
-## Docker tests (back)
+## Testes backend
 
 ```bash
-cd "C:/Users/conta/OneDrive/Desktop/meu-guia/meu-guia-api"
-
-# Build
-MSYS_NO_PATHCONV=1 docker run --rm -v "/c/Users/conta/OneDrive/Desktop/meu-guia/meu-guia-api":/src -w /src golang:1.24-alpine sh -c "go build ./... 2>&1" | tail -15
+cd "$BACK"
+go build ./...
+go vet ./...
+go test ./...              # 13/13 packages
 
 # Test específico
-MSYS_NO_PATHCONV=1 docker run --rm -v "/c/Users/conta/OneDrive/Desktop/meu-guia/meu-guia-api":/src -w /src golang:1.24-alpine sh -c "go test ./internal/services/ -v -run TestContract 2>&1" | tail -20
-
-# Suite completa
-MSYS_NO_PATHCONV=1 docker run --rm -v "/c/Users/conta/OneDrive/Desktop/meu-guia/meu-guia-api":/src -w /src golang:1.24-alpine sh -c "go test ./... 2>&1" | tail -20
+go test ./internal/services/ -v -run TestRegisterCompany
 ```
 
-## Front tests
+## Testes frontend
 
 ```bash
-cd "C:/Users/conta/OneDrive/Desktop/meu-guia/meu-guia-front"
-npm run dev  # porta 3000
-npx tsc --noEmit  # typecheck
-npx vitest run  # testes
+cd "$FRONT"
+npm run dev        # porta 3000
+npm run typecheck  # tsc --noEmit
+npx vitest run     # 42 arquivos / 264 testes
+npm run build
+```
+
+## Produção
+
+```bash
+# Health
+curl -s https://api.meuguiacatolico.com.br/health
+curl -sI https://meuguiacatolico.com.br
+
+# SSH na VPS — chave do CI (sem passphrase)
+ssh -o BatchMode=yes -i ~/.ssh/gh_actions_deploy root@144.91.86.204
+
+# Service + log
+ssh -o BatchMode=yes -i ~/.ssh/gh_actions_deploy root@144.91.86.204 \
+  "systemctl status meu-guia-api; journalctl -u meu-guia-api -n 50 --no-pager"
+
+# psql no banco de produção (meuguiadb)
+ssh -o BatchMode=yes -i ~/.ssh/gh_actions_deploy root@144.91.86.204 \
+  "sudo -u postgres psql -d meuguiadb -t -A -F'|' -c \"select ...;\""
+
+# Catálogo de localização
+ssh -o BatchMode=yes -i ~/.ssh/gh_actions_deploy root@144.91.86.204 \
+  "sudo -u postgres psql -d meuguiadb -t -A -F'|' -c \
+  \"select (select count(*) from neighborhoods) bairros, (select count(*) from streets) ruas, (select count(*) from regions) regioes;\""
+```
+
+> A chave pessoal `~/.ssh/id_ed25519` tem passphrase e o `ssh-agent` não está rodando nesta máquina — use `~/.ssh/gh_actions_deploy`.
+
+## CI (sem gh CLI)
+
+```bash
+TOKEN=$(printf 'protocol=https\nhost=github.com\n\n' | git credential fill | grep '^password=' | cut -d= -f2-)
+
+curl -s -H "Authorization: Bearer $TOKEN" \
+  "https://api.github.com/repos/Pedro-Wilker/meu-guia-api/actions/runs?per_page=3"
+
+curl -s -H "Authorization: Bearer $TOKEN" \
+  "https://api.github.com/repos/Pedro-Wilker/meu-guia-front/actions/runs?per_page=3"
+```
+
+## Deploy
+
+```bash
+# Backend: push em main dispara CI (test → build → VPS). Frontend: push em master
+# dispara CI de qualidade; o deploy é da Vercel.
+git -C "$BACK" push origin main
+git -C "$FRONT" push origin master
 ```
 
 ## Commit pattern
@@ -58,23 +107,14 @@ git commit -m "feat(scope): description curta
 
 Detalhes adicionais se necessário.
 
-Co-Authored-By: Claude Code <noreply@anthropic.com>"
-```
-
-## Tag final (Task 21)
-
-```bash
-git tag planos-contrato-2026-09-13
-git push origin main --tags
+Co-Authored-By: Claude <noreply@anthropic.com>"
 ```
 
 ## Backup sync
 
 ```bash
-# Atualizar SYNC-AAAAMM-DD.md a cada task completa (opcional mas recomendado)
-# Estrutura:
-# pedro-claude-guia-catolico/
-#   ├── SYNC-2026-09-14.md  (hoje)
-#   ├── SYNC-2026-09-15.md  (próxima)
-#   └── ...
+# Criar snapshot no fim de cada entrega
+$EDITOR "$SYNC/SYNC-AAAAMM-DD-descricao.md"
+git -C "$SYNC" add -A && git -C "$SYNC" commit -m "save: descricao curta"
+git -C "$SYNC" push origin main
 ```

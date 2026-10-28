@@ -62,6 +62,33 @@ Aplicada em cancelamento antecipado de planos `proportional_multa` (destaque). I
 
 Sem cron. Admin aplica manualmente via `ApplyReadjustment`. Log em `subscription.LastReadjustmentAt` + `subscription.ReadjustmentCount`. Implementar Tasks 12-14.
 
+### 6. Registro único de models — `internal/models/registry.go` (2026-10-23)
+
+`models.All()` é a **fonte única** da lista de models. `database.AutoMigrate` (produção) e `testutil.NewTestDB` (testes) consomem a mesma.
+
+**Por que:** antes o AutoMigrate de produção tinha uma lista própria. Faltaram `consent_policies` (500 `SQLSTATE 25P02` no cadastro de cliente) e `contract_acceptances`/`service_orders` (500 `relation "contract_acceptances" does not exist` no cadastro de empresa) — **os testes passavam porque o `testutil` tinha a lista completa**. Duas listas = drift garantido.
+
+**Guardas:** `TestAll_CobreTodoStructDoPacote` (parse do pacote com `go/parser` + `os.ReadDir`, confere que todo struct está em `All()`) e `TestAutoMigrate_CriaTabelasCriticas` (sqlite in-memory).
+
+**Regra: nunca duplicar a lista de models em dois lugares.**
+
+### 7. Bairro = linha do catálogo, não texto livre (2026-10-23)
+
+Cadastro de empresa: o bairro tem que existir em `neighborhoods` e pertencer à cidade informada. A tela deixa **digitar para buscar**, mas o valor gravado tem que ser uma linha do catálogo — bairro digitado à mão vira empresa invisível nos filtros por bairro (o slug não resolve).
+
+- `resolveNeighborhood(db, city, name, slug)`: **slug do cliente tem precedência** (é a chave que o dropdown entregou); sem slug, deriva o slug do nome; a busca é presa na `region_id` da cidade (dois "Centro" em cidades diferentes não podem se misturar).
+- `ValidateNeighborhood`: bairro fora do catálogo / inativo / de outra cidade → erro. **Valida DEPOIS do contrato** (erro de contrato é 422 com código próprio; a ordem não pode virar o erro que o usuário vê).
+- `ApplyNeighborhood`: grava nome+slug da **linha do catálogo** (o que o usuário digitou e o que o dropdown mostrou podem divergir em caixa/acento).
+- **Rua continua texto livre** (com sugestão): só 10 dos 43 bairros têm ruas catalogadas (30 ruas). Rua digitada fora da lista é mantida.
+- `neighborhood_slug` tem unique index **composto** `(slug, region_id)` — o slug sozinho não identifica o bairro.
+
+### 8. Pipeline de deploy (2026-10-23)
+
+- **Backend**: `main` → GH Actions "Deploy Backend" → vet + test → build linux/amd64 → scp do binário + `docs/contracts/v1.pdf` → `/usr/local/bin/meu-guia-api` → `systemctl restart meu-guia-api` → health check.
+- **Frontend**: `master` → GH Actions "Verificar Frontend" (typecheck + test + build). **O deploy é da Vercel**; a VPS hospeda só a API. (Antes era PM2 na VPS — trocado.)
+- `AutoMigrate` roda **em todo boot, inclusive produção** → schema do prod acompanha o código no deploy.
+- PDF do contrato marcado como binário no `.gitattributes` — o SHA-256 é o que o usuário assina; CRLF do Windows mudaria o hash.
+
 ## Race condition com Pedro
 
 Pedro (humano) trabalha em paralelo. Em Task 4,Pedro tinha commit `ef320329` "feat: refactor pricing..." fazendo parte do trabalho. Implementer detectou com `git log --oneline -5`, fez `git reset --soft HEAD~1` para recuperar mudanças, re-commitou limpo como `fed1909`.
@@ -97,20 +124,24 @@ Pedro (humano) trabalha em paralelo. Em Task 4,Pedro tinha commit `ef320329` "fe
 
 | Item | Path |
 |------|------|
-| Plan principal | `docs/superpowers/plans/2026-09-13-planos-contrato.md` |
-| Spec | `docs/superpowers/specs/2026-09-13-prd-planos-contrato.html` |
-| Contrato Word | `C:\Users\conta\OneDrive\Desktop\meu-guia\Contrato Meu Guia Catolico - Revisado.docx` |
-| Contrato TXT | `C:\Users\conta\OneDrive\Desktop\meu-guia\Contrato Meu Guia Catolico - Revisado.txt` |
-| PDF asset | `meu-guia-api/docs/contracts/v1.pdf` (97 bytes, placeholder `%PDF-1.4`) |
-| Migrations back | `meu-guia-api/migrations/000015..000017*.sql` |
-| Models back | `meu-guia-api/internal/models/` |
-| Services back | `meu-guia-api/internal/services/` |
-| Handlers back | `meu-guia-api/internal/handlers/` |
-| Routes | `meu-guia-api/internal/routes/routes.go` |
-| Test util | `meu-guia-api/internal/testutil/db.go` + `migrate.go` |
-| Front types | `meu-guia-front/lib/types.ts` |
-| Front api | `meu-guia-front/lib/api.ts` |
-| Front pages | `meu-guia-front/app/(public)/termos-aceite/`, `(provider)/empresa/os/`, `(admin)/admin/empresas/[id]/os/novo` |
+| Raiz do monorepo | `C:\Users\conta\OneDrive\Documentos\projeto\artonbyte\meu-guia-catolico\` |
+| Plan principal | `backend/docs/superpowers/plans/2026-09-13-planos-contrato.md` |
+| Spec | `backend/docs/superpowers/specs/2026-09-13-prd-planos-contrato.html` |
+| Contrato Word | `C:\Users\conta\OneDrive\Documentos\projeto\artonbyte\meu-guia-catolico\Contrato Meu Guia Catolico - Revisado.docx` |
+| Contrato TXT | `C:\Users\conta\OneDrive\Documentos\projeto\artonbyte\meu-guia-catolico\Contrato Meu Guia Catolico - Revisado.txt` |
+| PDF asset | `backend/docs/contracts/v1.pdf` (vai no deploy para `/opt/meuguia/docs/contracts/v1.pdf`) |
+| Registro de models | `backend/internal/models/registry.go` ← **fonte única**, não duplicar |
+| Migrations back | `backend/migrations/000015..000017*.sql` |
+| Models back | `backend/internal/models/` |
+| Services back | `backend/internal/services/` (endereço: `company_address.go`) |
+| Handlers back | `backend/internal/handlers/` |
+| Routes | `backend/internal/routes/routes.go` |
+| Test util | `backend/internal/testutil/db.go` + `migrate.go` |
+| Front types | `frontend/lib/types.ts` |
+| Front api | `frontend/lib/api.ts` |
+| Combobox (novo) | `frontend/components/ui/combobox.tsx` |
+| Cascata de endereço | `frontend/components/dashboard/address-cascade.tsx` |
+| Front pages | `frontend/app/(public)/termos/`, `(public)/privacidade/`, `(public)/termos-aceite/`, `(provider)/empresa/os/`, `(admin)/admin/empresas/[id]/os/novo` |
 
 ## Modelo de agents
 
@@ -123,9 +154,17 @@ Brief file: `task-N-brief.md`. Report: `task-N-report.md`. Review: `tasks-N-revi
 ## Docker / Ambiente
 
 - Windows 11, Git Bash, Docker Desktop
-- Padrão: `MSYS_NO_PATHCONV=1 docker run --rm -v "/c/Users/conta/OneDrive/Desktop/meu-guia/meu-guia-api":/src -w /src golang:1.24-alpine sh -c "COMMAND 2>&1"`
+- Raiz do monorepo: `C:/Users/conta/OneDrive/Documentos/projeto/artonbyte/meu-guia-catolico` (o caminho antigo `Desktop/meu-guia` não existe mais)
+- Padrão: `MSYS_NO_PATHCONV=1 docker run --rm -v "$BACK":/src -w /src golang:1.24-alpine sh -c "COMMAND 2>&1"` — mas Go 1.24 e Node 20 locais funcionam, suíte roda direto
 - Test em SQLite in-memory (`testutil.NewTestDB`)
 - Branch protection: NÃO commitar em main sem verificar — mas como Pedro já está em main, ok prosseguir
+
+## Acesso ao servidor
+
+- VPS Contabo `144.91.86.204` (Ubuntu 24.04), systemd `meu-guia-api`, binário em `/usr/local/bin/meu-guia-api`, contrato em `/opt/meuguia/docs/contracts/v1.pdf`
+- SSH: usar `~/.ssh/gh_actions_deploy` (mesma chave do CI, **sem passphrase**). A chave pessoal `~/.ssh/id_ed25519` tem passphrase e o `ssh-agent` não está rodando nesta máquina.
+- Banco de produção: `meuguiadb` (via `sudo -u postgres psql -d meuguiadb` no host)
+- `gh` CLI **não** está instalado — token via credential helper do git (`printf 'protocol=https\nhost=github.com\n\n' | git credential fill`)
 
 ## Lembretes
 

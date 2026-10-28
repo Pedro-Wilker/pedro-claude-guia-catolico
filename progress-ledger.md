@@ -1,6 +1,24 @@
 # Progress Ledger — espelho de `.superpowers/sdd/progress.md`
 
-Snapshot em 2026-09-14. Atualizar após cada task.
+Snapshot mais recente: **2026-10-27**. Atualizar após cada task.
+
+## Ciclo 2026-10-23 — CADASTRO + PRODUÇÃO — COMPLETO ✓
+
+Sem plano formal (trabalho pedido direto pelo Pedro). Entregas, todas no ar:
+
+| # | Entrega | Commit (back) | Commit (front) | Status |
+|---|---------|---------------|----------------|--------|
+| 1 | SEO: metadados por página, sitemap, robots, JSON-LD | — | `4db39b0` | ✅ |
+| 2 | Auth/UI: links duplicados, olhinho de senha, botão Pix fora, textos dos cards, páginas `/termos` + `/privacidade` | — | `48c35f6` | ✅ |
+| 3 | **500 cadastro de cliente** — `consent_policies` faltando + tx abortada | `3d55c913` | — | ✅ |
+| 4 | **500 cadastro de empresa** — `contract_acceptances`/`service_orders` faltando → `models.All()` (registro único) | `59dccd00` | — | ✅ |
+| 5 | Contrato: 404 do PDF + PDF binário no git e no deploy | `b197371e` `ff2485a7` | — | ✅ |
+| 6 | Rotas anunciam o próprio link com esquema real | `752ecc59` | — | ✅ |
+| 7 | **Cadastro de empresa**: bairro do catálogo (seleção obrigatória) + "Número do endereço" | `205eef9c` | `688cd8b` | ✅ |
+
+Verificado live em produção: cadastro com bairro do catálogo → **201** (número do endereço gravado); bairro fora do catálogo → **400**. Contas de teste apagadas do prod.
+
+Detalhe completo em `SYNC-2026-10-27-cadastro-bairro-catalogo.md`.
 
 ## PRD 2026-09-13 ADMIN COVERAGE — COMPLETO ✓
 

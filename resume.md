@@ -3,59 +3,69 @@
 ## TL;DR
 
 1. Abrir `pedro-claude-guia-catolico/`
-2. Ler `SYNC-AAAAMM-DD.md` (mais recente) + `context.md`
-3. Verificar git status (working tree deve estar limpo)
+2. Ler `SYNC-2026-10-27-cadastro-bairro-catalogo.md` (mais recente) + `context.md`
+3. Verificar git status dos 2 repos (working tree deve estar limpo)
 4. Continuar da próxima task do ledger
+
+## Caminhos (valem em 2026-10)
+
+```bash
+BACK="C:/Users/conta/OneDrive/Documentos/projeto/artonbyte/meu-guia-catolico/backend"
+FRONT="C:/Users/conta/OneDrive/Documentos/projeto/artonbyte/meu-guia-catolico/frontend"
+SYNC="C:/Users/conta/OneDrive/Documentos/projeto/artonbyte/meu-guia-catolico/pedro-claude-guia-catolico"
+```
+
+O caminho antigo `C:/Users/conta/OneDrive/Desktop/meu-guia/` não existe mais.
 
 ## Passo-a-passo detalhado
 
 ### 1. Verificar ambiente
 
 ```bash
-cd "C:/Users/conta/OneDrive/Desktop/meu-guia/meu-guia-api"
-git status
-# Esperado: working tree limpo
+cd "$BACK"
+git status            # esperado: working tree limpo
+git log --oneline -5  # esperado: 205eef9c no topo
+git branch --show-current  # esperado: main
 
-git log --oneline -10
-# Esperado: último commit é o do SYNC
-
-git branch --show-current
-# Esperado: main
-
-MSYS_NO_PATHCONV=1 docker ps
-# Esperado: Docker Desktop rodando
+cd "$FRONT"
+git log --oneline -5  # esperado: 688cd8b no topo
+git branch --show-current  # esperado: master
 ```
 
 ### 2. Rodar suite pra confirmar saúde
 
 ```bash
-cd "C:/Users/conta/OneDrive/Desktop/meu-guia/meu-guia-api"
-MSYS_NO_PATHCONV=1 docker run --rm -v "/c/Users/conta/OneDrive/Desktop/meu-guia/meu-guia-api":/src -w /src golang:1.24-alpine sh -c "go test ./... 2>&1" | tail -15
-# Esperado: 9/9 packages OK, zero regressões
+cd "$BACK" && go build ./... && go test ./...
+# esperado: 13/13 packages OK
+
+cd "$FRONT" && npx vitest run && npm run typecheck
+# esperado: 42 arquivos / 264 testes OK
 ```
+
+Sem Docker: Go 1.24 e Node 20 instalados local funcionam (o repo é testado direto aqui).
 
 ### 3. Identificar próxima task
 
-Abrir `progress-ledger.md` e ver primeira task com `[ ]` (não-marcada).
+Abrir `progress-ledger.md` e ver a primeira task com `[ ]` (não-marcada).
 
-Exemplo HOJE: próxima é **Task 7 — Handlers contract + rotas**.
+Hoje as trilhas abertas são: **SEO** (Search Console / Perfil Google / conteúdo real) e **UI do Asaas** (F1–F6 do SYNC-2026-10-20). O PRD `planos-contrato-2026-09-13` já está todo entregue.
 
-### 4. Ler brief + report das tasks anteriores
-
-Para entender contexto:
-
-- `task-N-brief.md` (brief completo da task)
-- `task-N-report.md` (o que foi feito)
-- `tasks-N-review.md` (verdict do reviewer + findings)
-
-Path: `C:\Users\conta\OneDrive\Desktop\meu-guia\.superpowers\sdd\`
-
-### 5. Ler plan task detalhada
+### 4. Ver produção
 
 ```bash
-cd "C:/Users/conta/OneDrive/Desktop/meu-guia"
-grep -A 100 "^### Task 7:" docs/superpowers/plans/2026-09-13-planos-contrato.md | head -100
+# API
+curl -s https://api.meuguiacatolico.com.br/health
+# Site
+curl -sI https://meuguiacatolico.com.br
+
+# VPS (chave do CI, sem passphrase)
+ssh -o BatchMode=yes -i ~/.ssh/gh_actions_deploy root@144.91.86.204 \
+  "systemctl is-active meu-guia-api; journalctl -u meu-guia-api -n 30 --no-pager"
 ```
+
+### 5. Ler brief + report das tasks anteriores
+
+Para tasks do fluxo SDD: `task-N-brief.md`, `task-N-report.md`, `tasks-N-review.md` em `.superpowers/sdd/`.
 
 ### 6. Despachar implementer
 
@@ -70,19 +80,16 @@ Se você é Claude, criar brief file (`task-N-brief.md`) e despachar implementer
 ### 8. Atualizar ledger + sync
 
 - Marcar task como `[x]` em `progress-ledger.md`
-- Atualizar SYNC-AAAAMM-DD.md com novo commit + próxima task
-- (Opcional) criar novo SYNC se mudou muito
+- Atualizar/criar `SYNC-AAAAMM-DD.md` com novo commit + próxima task
+- Commit + push do diretório de sync (repo `pedro-claude-guia-catolico`)
 
-## Quando você NÃO tem Docker
+## Quando você NÃO tem Go/Node local
 
 ```bash
-# Tentar build/test direto no Go local (se tiver Go 1.24 instalado)
-cd "C:/Users/conta/OneDrive/Desktop/meu-guia/meu-guia-api"
-go build ./...
-go test ./...
+MSYS_NO_PATHCONV=1 docker run --rm -v "$BACK":/src -w /src golang:1.24-alpine sh -c "go test ./... 2>&1" | tail -15
 ```
 
-Se Go local não disponível, pular testes e revisar código manualmente. **Não commitar sem testar** — deixar pendente até conseguir Docker.
+Se não tiver Docker também, pular testes e revisar código manualmente. **Não commitar sem testar** — deixar pendente até conseguir rodar.
 
 ## Quando git está dirty (Pedro mexeu)
 
@@ -105,32 +112,23 @@ git add <file>
 git commit  # completa o merge
 ```
 
-## Quick reference: próximas tasks (2026-09-14)
+## Armadilhas (ler antes de mexer)
 
-| # | O que fazer | Bloqueio |
-|---|-------------|----------|
-| 7 | Handlers contract + rotas (3 endpoints) | Task 6 ✅ |
-| 8 | Bloqueio signup empresa sem contract_acceptance | Task 7 |
-| 9 | Migration service_orders + model | Task 5 ✅ |
-| 10 | Service service_order + test flow | Task 9 |
-| 11 | Handlers service_order + rotas | Task 10 |
-| 12 | Migration subscription readjustment | Task 4 ✅ |
-| 13 | Service subscription Cancel + ApplyReadjustment | Task 12 |
-
-Detalhes completos no `progress-ledger.md`.
+- `gofmt -w` em pasta inteira gera diff de ruído (CRLF↔LF). Formatar só o arquivo editado.
+- `git status` pode marcar "M" sem diff real — `git add -A` normaliza.
+- AutoMigrate de produção e `testutil` consumem `models.All()` — nunca duplicar a lista de models.
+- Ordem no `RegisterCompany`: contrato (422) ANTES da localização (400).
+- `~/.ssh/id_ed25519` tem passphrase e o agent não está rodando — use `~/.ssh/gh_actions_deploy`.
 
 ## Comandos rápidos (resumo)
 
 ```bash
-# Status
-git -C "C:/Users/conta/OneDrive/Desktop/meu-guia/meu-guia-api" status
-git -C "C:/Users/conta/OneDrive/Desktop/meu-guia/meu-guia-api" log --oneline -5
+git -C "$BACK" status
+git -C "$BACK" log --oneline -5
+git -C "$FRONT" log --oneline -5
 
-# Build
-MSYS_NO_PATHCONV=1 docker run --rm -v "/c/Users/conta/OneDrive/Desktop/meu-guia/meu-guia-api":/src -w /src golang:1.24-alpine sh -c "go build ./... 2>&1" | tail -10
-
-# Test all
-MSYS_NO_PATHCONV=1 docker run --rm -v "/c/Users/conta/OneDrive/Desktop/meu-guia/meu-guia-api":/src -w /src golang:1.24-alpine sh -c "go test ./... 2>&1" | tail -15
+cd "$BACK" && go test ./...
+cd "$FRONT" && npx vitest run
 ```
 
 Lista completa em `commands.md`.

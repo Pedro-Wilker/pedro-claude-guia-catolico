@@ -1,1 +1,2 @@
 - [Fase D finalizada](project-fase-d-finalizada.md) — 0 500s, 5 fixes UUID em handlers
+- [Cadastro: bairro do catálogo + nº do endereço](project-cadastro-bairro-catalogo-2026-10.md) — no ar 2026-10-23; estado do repo, armadilhas de gofmt/SSH, pendências SEO e Asaas UI
