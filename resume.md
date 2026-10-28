@@ -3,7 +3,7 @@
 ## TL;DR
 
 1. Abrir `pedro-claude-guia-catolico/`
-2. Ler `SYNC-2026-10-27-cadastro-bairro-catalogo.md` (mais recente) + `context.md`
+2. Ler `SYNC-2026-10-28-cadastro-empresa-bloqueado.md` (mais recente) + `context.md`
 3. Verificar git status dos 2 repos (working tree deve estar limpo)
 4. Continuar da próxima task do ledger
 
@@ -28,7 +28,7 @@ git log --oneline -5  # esperado: 205eef9c no topo
 git branch --show-current  # esperado: main
 
 cd "$FRONT"
-git log --oneline -5  # esperado: 688cd8b no topo
+git log --oneline -5  # esperado: 6048796 no topo
 git branch --show-current  # esperado: master
 ```
 
@@ -39,7 +39,7 @@ cd "$BACK" && go build ./... && go test ./...
 # esperado: 13/13 packages OK
 
 cd "$FRONT" && npx vitest run && npm run typecheck
-# esperado: 42 arquivos / 264 testes OK
+# esperado: 44 arquivos / 271 testes OK
 ```
 
 Sem Docker: Go 1.24 e Node 20 instalados local funcionam (o repo é testado direto aqui).

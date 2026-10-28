@@ -1,6 +1,23 @@
 # Progress Ledger — espelho de `.superpowers/sdd/progress.md`
 
-Snapshot mais recente: **2026-10-27**. Atualizar após cada task.
+Snapshot mais recente: **2026-10-28**. Atualizar após cada task.
+
+## Ciclo 2026-10-28 — CADASTRO DE EMPRESA DESTRRAVADO — COMPLETO ✓
+
+Bug reportado: clicar em "Enviar cadastro" não fazia nada (nenhuma rota chamada, sem redirect, sem mensagem).
+
+| # | Entrega | Commit (back) | Commit (front) | Status |
+|---|---------|---------------|----------------|--------|
+| 1 | **Cadastro de empresa travado**: `region_id` exigido como UUID e nunca enviado (input hidden) → validação falhava antes do POST, sem UI de erro | — | `6048796` | ✅ |
+| 2 | Resumo de erros de validação colado no botão de envio (foco + scroll) nos dois forms de cadastro | — | `6048796` | ✅ |
+| 3 | `region_id` preenchido com o UUID da região selecionada (empresa nasce com vínculo regional) | — | `6048796` | ✅ |
+| 4 | Consentimentos: mensagem única citando os dois termos obrigatórios que faltam | — | `6048796` | ✅ |
+
+Verificado em produção (navegador real, POST interceptado): o form **manda** o payload completo (`region_id`, bairro+slug, categoria, consentimentos, contrato). Antes: nenhum POST.
+
+Pendência: apagar contas de teste no banco de produção (acesso SSH bloqueado por permissão nesta sessão).
+
+Detalhe completo em `SYNC-2026-10-28-cadastro-empresa-bloqueado.md`.
 
 ## Ciclo 2026-10-23 — CADASTRO + PRODUÇÃO — COMPLETO ✓
 
